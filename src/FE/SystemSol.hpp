@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <array>
 #include <iostream>
+#include <iomanip>
 
 template<std::size_t N>
 class SystemSol {
@@ -27,7 +28,8 @@ class SystemSol {
 
     void display() const {
         for (std::size_t i = 0; i < sol.size(); ++i) {
-            std::cout << "u_" << i << " = " << sol[i] << std::endl;
+            std::cout << "u_" << std::setw(2) << std::setfill('0') << i << " = ";
+            std::cout << std::setfill(' ') << std::setw(8) << std::setprecision(2) << sol[i] << std::endl;
         }
     }
 

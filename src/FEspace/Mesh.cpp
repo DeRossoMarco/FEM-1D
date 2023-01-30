@@ -13,6 +13,6 @@ unsigned int Mesh::get_size() const {
     return N;
 }
 
-unsigned int Mesh::get_h() const {
+double Mesh::get_h() const {
     return h;
 }

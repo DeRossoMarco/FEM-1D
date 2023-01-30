@@ -9,12 +9,13 @@
 #include <array>
 #include <cstdlib>
 #include <iostream>
+#include <iomanip>
 
 template<std::size_t N>
 class SystemRhS{
     public:
 
-    SystemRhS() : rhs() {}
+    SystemRhS() : rhs() { clear(); }
 
     double& operator[](const std::size_t &i) {
         return rhs[i];
@@ -25,7 +26,7 @@ class SystemRhS{
     }
 
     void assemble(const Mesh &mesh, const ForcingTerm &f, const double &t) {
-        std::cout << "Assemblig system RhS" << std::endl;
+        std::cout << std::endl << "Assemblig system RhS" << std::endl;
         for (std::size_t k = 1; k < mesh.get_size(); ++k) {
             for (std::size_t i = k; i < k + 2; ++i) {
                 rhs[i] +=
@@ -45,6 +46,12 @@ class SystemRhS{
     void clear() {
         for (auto e : rhs) {
             e = 0.0;
+        }
+    }
+
+    void display() const {
+        for (auto e : rhs) {
+            std::cout << std::setw(5) << std::setprecision(3) << e << std::endl;
         }
     }
 

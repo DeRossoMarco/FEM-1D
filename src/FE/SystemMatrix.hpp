@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <iterator>
 #include <iostream>
+#include <iomanip>
 
 template<std::size_t N>
 class SystemMatrix{
@@ -32,7 +33,7 @@ class SystemMatrix{
     void assemble(const Mesh &mesh,
                   const CFunction &c,
                   const DiffusionCoefficient &mi) {
-        std::cout << "Assembling system matrix" << std::endl;
+        std::cout << std::endl << "Assembling system matrix" << std::endl;
         for (std::size_t k = 1; k < mesh.get_size(); ++k) {
             for (std::size_t i = k; i < k + 2; ++i) {
                 for (std::size_t j = k; j < k + 2; ++j) {
@@ -66,6 +67,14 @@ class SystemMatrix{
         for (auto r : matrix) {
             for (auto e : r)
                 e = 0.0;
+        }
+    }
+
+    void display() const {
+        for (auto r : matrix) {
+            for (auto e : r)
+                std::cout << std::setw(7) << std::setprecision(2) << e;
+            std::cout << std::endl;
         }
     }
 

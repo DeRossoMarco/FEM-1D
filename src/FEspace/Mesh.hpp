@@ -9,14 +9,14 @@ class Mesh {
     Mesh(const double &L_, const unsigned int &N_) :
         L(L_),
         N(N_),
-        h(L / (N + 1))
+        h(L / N)
     {}
 
     double operator[](const std::size_t &i) const;
 
     unsigned int get_size() const;
 
-    unsigned int get_h() const;
+    double get_h() const;
 
     private:
     const double L;

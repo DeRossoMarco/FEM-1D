@@ -10,7 +10,7 @@
 #include <iostream>
 
 int main() {
-    constexpr double L = 1.0;
+    constexpr double L = 10.0;
     constexpr double T = 0.0;
     constexpr int N = 10;
 
@@ -27,7 +27,9 @@ int main() {
 
     // Solver
     matrix.assemble(mesh, c, mi);
+    matrix.display();
     rhs.assemble(mesh, f, 0.0);
+    rhs.display();
     Solver<N + 2> solver(matrix, rhs);
 
     sol = solver.solve_thomas();
