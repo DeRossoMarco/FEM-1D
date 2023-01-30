@@ -2,24 +2,37 @@
 #define SYSTEM_SOL_HPP
 
 #include <cstdlib>
-#include <vector>
+#include <array>
+#include <iostream>
 
+template<std::size_t N>
 class SystemSol {
     public:
 
-    SystemSol(const std::size_t &N) {
-        sol.resize(N + 2);
-        clear();
+    SystemSol() : sol() {}
+
+    double& operator[](const std::size_t &i) {
+        return sol[i];
     }
 
-    double& operator[](const std::size_t &i);
+    double operator[](const std::size_t &i) const {
+        return sol[i];
+    }
 
-    double operator[](const std::size_t &i) const;
+    void clear() {
+        for (auto e : sol) {
+            e = 0.0;
+        }
+    }
 
-    void clear();
+    void display() const {
+        for (std::size_t i = 0; i < sol.size(); ++i) {
+            std::cout << "u_" << i << " = " << sol[i] << std::endl;
+        }
+    }
 
     private:
-    std::vector<double> sol;
+    std::array<double, N> sol;
 };
 
 #endif

@@ -2,38 +2,75 @@
 #define SYSTEM_MATRIX_HPP
 
 #include "../FEspace/Mesh.hpp"
-
 #include "../functions/CFunction.hpp"
 #include "../functions/DiffusionCoefficient.hpp"
+#include "../Quadrature/Quadrature.hpp"
+#include "../FEspace/BaseFunc.hpp"
 
-#include <vector>
+#include <array>
 #include <cstdlib>
 #include <iterator>
+#include <iostream>
 
+template<std::size_t N>
 class SystemMatrix{
     public:
 
-    SystemMatrix(const std::size_t &N) {
-        matrix.resize(N + 2);
-        for (auto r : matrix)
-            r.resize(N + 2);
-        clear();
+    SystemMatrix() : matrix() {}
+
+    std::array<double, N>& operator[](const std::size_t &i) {
+        return matrix.at(i);
     }
 
-    std::vector<double>& operator[](const std::size_t &i);
+    std::array<double, N> operator[](const std::size_t &i) const {
+    return matrix.at(i);
+    }
 
-    std::vector<double> operator[](const std::size_t &i) const;
-
-    const std::size_t size() const;
-
+    const std::size_t size() const {
+        return N;
+    }
     void assemble(const Mesh &mesh,
                   const CFunction &c,
-                  const DiffusionCoefficient &mi);
+                  const DiffusionCoefficient &mi) {
+        std::cout << "Assembling system matrix" << std::endl;
+        for (std::size_t k = 1; k < mesh.get_size(); ++k) {
+            for (std::size_t i = k; i < k + 2; ++i) {
+                for (std::size_t j = k; j < k + 2; ++j) {
+                    matrix[i][j] +=
+                        Quadrature::two_point_quadrature(
+                            [&] (double x) -> double {
+                                return
+                                    mi.value(x) * 
+                                    BaseFunc::d_func(mesh, i)(x) *
+                                    BaseFunc::d_func(mesh, j)(x);
+                            },
+                            mesh[k],
+                            mesh[k + 1]
+                        ) + 
+                        Quadrature::two_point_quadrature(
+                            [&] (double x) -> double {
+                                return
+                                    c.value(x) *
+                                    BaseFunc::func(mesh, i)(x) *
+                                    BaseFunc::func(mesh, j)(x);
+                            },
+                            mesh[k],
+                            mesh[k + 1]
+                        );
+                }
+            }
+        }
+    }
 
-    void clear();
+    void clear() {
+        for (auto r : matrix) {
+            for (auto e : r)
+                e = 0.0;
+        }
+    }
 
     private:
-    std::vector<std::vector<double>> matrix;
+    std::array<std::array<double, N>, N> matrix;
 };
 
 #endif
