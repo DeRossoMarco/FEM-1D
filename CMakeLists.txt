@@ -36,5 +36,6 @@ add_executable(FEM-1D   src/FEM-1D.cpp
                         src/FEspace/BaseFunc.cpp
                         src/FE/SystemMatrix.cpp
                         src/FE/SystemRhS.cpp
+                        src/FE/SystemSol.cpp
                         src/FE/Solver.cpp
                         src/Quadrature/Quadrature.cpp)
