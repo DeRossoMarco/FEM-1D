@@ -4,8 +4,9 @@
 #include "../FEspace/Mesh.hpp"
 #include "../functions/CFunction.hpp"
 #include "../functions/DiffusionCoefficient.hpp"
-#include "../Quadrature/Quadrature.hpp"
+#include "../quadrature/Quadrature.hpp"
 #include "../FEspace/BaseFunc.hpp"
+#include "TridiagMatrix.hpp"
 
 #include <array>
 #include <cstdlib>
@@ -17,27 +18,26 @@ template<std::size_t N>
 class SystemMatrix{
     public:
 
-    SystemMatrix() : matrix() {}
-
-    std::array<double, N>& operator[](const std::size_t &i) {
-        return matrix.at(i);
+    double& operator()(const std::size_t& i, const std::size_t& j) {
+        return matrix(i, j);
     }
 
-    std::array<double, N> operator[](const std::size_t &i) const {
-    return matrix.at(i);
+    double operator()(const std::size_t& i, const std::size_t& j) const {
+        return matrix(i, j);
     }
 
     const std::size_t size() const {
-        return N;
+        return N + 2;
     }
+
     void assemble(const Mesh &mesh,
                   const CFunction &c,
                   const DiffusionCoefficient &mi) {
         std::cout << std::endl << "Assembling system matrix" << std::endl;
-        for (std::size_t k = 1; k < mesh.get_size(); ++k) {
+        for (std::size_t k = 1; k < N; ++k) {
             for (std::size_t i = k; i < k + 2; ++i) {
                 for (std::size_t j = k; j < k + 2; ++j) {
-                    matrix[i][j] +=
+                    matrix(i, j) +=
                         Quadrature::two_point_quadrature(
                             [&] (double x) -> double {
                                 return
@@ -63,23 +63,21 @@ class SystemMatrix{
         }
     }
 
-    void clear() {
-        for (auto r : matrix) {
-            for (auto e : r)
-                e = 0.0;
-        }
+    void operator=(const double& d) {
+        matrix = d;
     }
 
-    void display() const {
-        for (auto r : matrix) {
-            for (auto e : r)
-                std::cout << std::setw(7) << std::setprecision(2) << e;
-            std::cout << std::endl;
-        }
+    const TridiagMatrix<N + 2>& data() const {
+        return matrix;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const SystemMatrix<N>& m) {
+        os << m.data();
+        return os;
     }
 
     private:
-    std::array<std::array<double, N>, N> matrix;
+    TridiagMatrix<N + 2> matrix;
 };
 
 #endif

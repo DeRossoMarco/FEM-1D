@@ -14,7 +14,7 @@ class ForcingTerm {
         T(T_)
     {}
 
-    double value(const double &x, const double &t) const;
+    double operator()(const double &x, const double &t) const;
 
     private:
     std::function<double(double, double)> f;

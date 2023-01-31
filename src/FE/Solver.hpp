@@ -12,36 +12,30 @@ template<std::size_t N>
 class Solver {
     public:
 
-    Solver(const SystemMatrix<N> &matrix_, const SystemRhS<N> &rhs_) :
-        matrix{matrix_},
-        rhs{rhs_}
-    {}
-
-    SystemSol<N> solve_thomas() {
-        std::cout << "Solving linear system with Thomas direct method" << std::endl;
-
+    static SystemSol<N> solve_thomas(SystemMatrix<N> matrix, SystemRhS<N> rhs) {
+        std::cout << std::endl << "Solving linear system with Thomas direct method" << std::endl;
         SystemSol<N> sol;
-        SystemRhS<N> rhs_t;
-        SystemMatrix<N> matrix_t;
+        double w;
 
-        rhs_t[0] /= matrix[0][0];
-        matrix_t[0][1] /= matrix[0][0];  
-        for (auto i = 1; i < N - 1; ++i) {
-            double r = 1 / (matrix[i][i] - matrix[i][i - 1] * matrix[i - 1][i]);
-            rhs_t[i] = r * (rhs[i] - matrix[i][i - 1] * rhs[i - 1]);
-            matrix_t[i][i + 1] = r * matrix[i][i + 1];
+        sol[0] = rhs[0];
+
+        for (int i = 2; i < N; ++i) {
+            w = matrix(i, i - 1) / matrix(i - 1, i - 1);
+            matrix(i, i) -= w * matrix(i - 1, i);
+            rhs[i] = rhs[i] - w * rhs[i - 1];
         }
 
-        for (auto i = N - 2; i > 0; --i) {
-            sol[i] = rhs_t[i] - matrix[i][i - 1] * rhs[i + 1];
+        sol[N] = rhs[N] / matrix(N, N);
+        for (int i = N - 1; i > 0; --i) {
+            sol[i] = (rhs[i] - matrix(i, i + 1) * sol[i + 1]) / matrix(i, i);
         }
+
+        sol[N + 1] = rhs[N + 1];
 
         return sol;
     }
 
     private:
-    SystemMatrix<N> matrix;
-    SystemRhS<N> rhs;
 };
 
 #endif

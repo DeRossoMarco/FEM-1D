@@ -9,7 +9,7 @@ class Mesh {
     Mesh(const double &L_, const unsigned int &N_) :
         L(L_),
         N(N_),
-        h(L / N)
+        h(L / (N + 1))
     {}
 
     double operator[](const std::size_t &i) const;

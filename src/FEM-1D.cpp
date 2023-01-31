@@ -6,35 +6,39 @@
 #include "FE/SystemMatrix.hpp"
 #include "FE/SystemRhS.hpp"
 #include "FE/SystemSol.hpp"
+#include "boundary/Dirichlet.hpp"
+#include "boundary/Neumann.hpp"
  
 #include <iostream>
 
 int main() {
-    constexpr double L = 10.0;
+    constexpr double L = 7.0;
     constexpr double T = 0.0;
-    constexpr int N = 10;
+    constexpr int N = 6;
 
     // Functions
-    ForcingTerm f([] (double x, double t) -> double { return x; }, L, T);
-    CFunction c([] (double x) -> double { return 1.0; }, L);
+    ForcingTerm f([] (double x, double t) -> double { return -1.0; }, L, T);
+    CFunction c([] (double x) -> double { return 0.0; }, L);
     DiffusionCoefficient mi([] (double x) -> double { return 1.0; }, L);
+    Dirichlet<N> bound_d([](double t){ return 1.0; }, [](double t){ return 1.0; });
+    Neumann bound_n(L, [](double t){ return 1.0; }, [](double t){ return 1.0; });
 
     // FE
     Mesh mesh(L, N);
-    SystemMatrix<N + 2> matrix;
-    SystemRhS<N + 2> rhs;
-    SystemSol<N + 2> sol;
+    SystemMatrix<N> matrix;
+    SystemRhS<N> rhs;
+    SystemSol<N> sol;
 
     // Solver
     matrix.assemble(mesh, c, mi);
-    matrix.display();
     rhs.assemble(mesh, f, 0.0);
-    rhs.display();
-    Solver<N + 2> solver(matrix, rhs);
+    bound_d.apply(matrix, rhs, 0.0);
+    
+    std::cout << matrix << rhs;
+    
+    sol = Solver<N>::solve_thomas(matrix, rhs);
 
-    sol = solver.solve_thomas();
-
-    sol.display();
+    std::cout << sol;
 
     return 0;
 }

@@ -10,7 +10,9 @@ template<std::size_t N>
 class SystemSol {
     public:
 
-    SystemSol() : sol() {}
+    SystemSol() {
+        this->operator=(0.0);
+    }
 
     double& operator[](const std::size_t &i) {
         return sol[i];
@@ -20,21 +22,22 @@ class SystemSol {
         return sol[i];
     }
 
-    void clear() {
-        for (auto e : sol) {
-            e = 0.0;
+    void operator=(const double& i) {
+        for (auto& e : sol) {
+            e = i;
         }
     }
 
-    void display() const {
-        for (std::size_t i = 0; i < sol.size(); ++i) {
-            std::cout << "u_" << std::setw(2) << std::setfill('0') << i << " = ";
-            std::cout << std::setfill(' ') << std::setw(8) << std::setprecision(2) << sol[i] << std::endl;
+    friend std::ostream& operator<<(std::ostream& os, const SystemSol& sol) {
+        for (auto i = 0; i < N + 2; ++i) {
+            os << "u_" << std::setw(2) << std::setfill('0') << i << " = ";
+            os << std::setfill(' ') << std::setw(10) << std::setprecision(3) << sol[i] << std::endl;
         }
+        return os;
     }
 
     private:
-    std::array<double, N> sol;
+    std::array<double, N + 2> sol;
 };
 
 #endif

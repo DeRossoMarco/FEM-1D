@@ -3,8 +3,9 @@
 
 #include "../FEspace/Mesh.hpp"
 #include "../functions/ForcingTerm.hpp"
-#include "../Quadrature/Quadrature.hpp"
+#include "../quadrature/Quadrature.hpp"
 #include "../FEspace/BaseFunc.hpp"
+#include "../boundary/Neumann.hpp"
 
 #include <array>
 #include <cstdlib>
@@ -15,7 +16,9 @@ template<std::size_t N>
 class SystemRhS{
     public:
 
-    SystemRhS() : rhs() { clear(); }
+    SystemRhS() {
+        this->operator=(0.0);
+    }
 
     double& operator[](const std::size_t &i) {
         return rhs[i];
@@ -27,36 +30,74 @@ class SystemRhS{
 
     void assemble(const Mesh &mesh, const ForcingTerm &f, const double &t) {
         std::cout << std::endl << "Assemblig system RhS" << std::endl;
-        for (std::size_t k = 1; k < mesh.get_size(); ++k) {
+        for (std::size_t k = 1; k < N + 1; ++k) {
             for (std::size_t i = k; i < k + 2; ++i) {
-                rhs[i] +=
+                rhs[k] +=
                     Quadrature::two_point_quadrature(
                         [&] (double x) -> double {
                             return
-                                f.value(x, t) *
-                                BaseFunc::func(mesh, i)(x);
+                                f(x, t) *
+                                BaseFunc::func(mesh, k)(x);
                         },
-                        mesh[k],
-                        mesh[k + 1]
+                        mesh[i - 1],
+                        mesh[i]
                     );
             }
         }
     }
 
-    void clear() {
-        for (auto e : rhs) {
-            e = 0.0;
+    void assemble(const Mesh &mesh,
+                  const ForcingTerm &f,
+                  const double &t,
+                  const Neumann& bound) {
+        rhs[0] +=
+            Quadrature::two_point_quadrature(
+                [&] (double x) -> double {
+                    return
+                        f(x, t) *
+                        BaseFunc::func(mesh, 0)(x);
+                },
+                mesh[0],
+                mesh[1]
+            ) +
+            bound(0, t);
+        assemble(mesh, f, t);
+        rhs[N + 1] +=
+            Quadrature::two_point_quadrature(
+                [&] (double x) -> double {
+                    return
+                        f(x, t) *
+                        BaseFunc::func(mesh, N + 1)(x);
+                },
+                mesh[N],
+                mesh[N + 1]
+            ) +
+            bound(N + 1, t);
+    }
+
+    void operator=(const double& i) {
+        for (auto& e : rhs) {
+            e = i;
         }
     }
 
-    void display() const {
+    auto begin() const {
+        return rhs.begin();
+    }
+
+    auto end() const {
+        return rhs.end();
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const SystemRhS& rhs) {
         for (auto e : rhs) {
-            std::cout << std::setw(5) << std::setprecision(3) << e << std::endl;
+            os << std::setw(5) << std::setprecision(3) << e << std::endl;
         }
+        return os;
     }
 
     private:
-    std::array<double, N> rhs;
+    std::array<double, N + 2> rhs;
 };
 
 #endif
