@@ -13,7 +13,6 @@ class Solver {
     public:
 
     static SystemSol<N> solve_thomas(SystemMatrix<N> matrix, SystemRhS<N> rhs) {
-        std::cout << std::endl << "Solving linear system with Thomas direct method" << std::endl;
         SystemSol<N> sol;
         double w;
 

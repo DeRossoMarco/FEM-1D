@@ -14,6 +14,10 @@ class TridiagMatrix {
         this->operator=(0.0);
     }
 
+    std::size_t size() const {
+        return b.size();
+    }
+
     double& operator()(const std::size_t& i, const std::size_t& j) {
         if (i == 0) {
             if (j == 0) return b[0];
@@ -77,7 +81,7 @@ class TridiagMatrix {
             matrix_(i, i + 1) = matrix(i, i + 1) + c[i];
         }
         matrix_(N - 1, N - 2) = matrix(N - 1, N - 2) + a[N - 2];
-        matrix_(N - 1, N - 1) = matrix(N - 1, N - 2) + b[N - 1];
+        matrix_(N - 1, N - 1) = matrix(N - 1, N - 1) + b[N - 1];
         return matrix_;
     }
 

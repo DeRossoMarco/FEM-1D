@@ -28,7 +28,6 @@ class SystemRhS {
     }
 
     void assemble(const Mesh &mesh, const ForcingTerm &f, const double &t) {
-        std::cout << std::endl << "Assemblig system RhS" << std::endl;
         for (std::size_t k = 0; k < N; ++k) {
             for (std::size_t i = k; i < k + 2; ++i) {
                 rhs[i] +=
@@ -49,6 +48,44 @@ class SystemRhS {
         for (auto& e : rhs) {
             e = i;
         }
+    }
+
+    SystemRhS<N> operator+(const SystemRhS<N>& rhs) const {
+        SystemRhS<N> rhs_;
+        for (int i = 0; i < N + 1; ++i) {
+            rhs_[i] = this->rhs[i] + rhs[i];
+        }
+        return rhs_;
+    }
+
+    SystemRhS<N>& operator+=(const SystemRhS<N>& rhs) {
+        *this = *this + rhs;
+        return *this;
+    }
+
+    SystemRhS<N> operator-(const SystemRhS<N>& rhs) const {
+        SystemRhS<N> rhs_;
+        for (int i = 0; i < N + 1; ++i) {
+            rhs_[i] = this->rhs[i] - rhs[i];
+        }
+    }
+
+    SystemRhS<N>& operator-=(const SystemRhS<N>& rhs) {
+        *this = *this - rhs;
+        return *this;
+    }
+
+    SystemRhS<N> operator*(const double& s) const {
+        SystemRhS<N> rhs_;
+        for (int i = 0; i < N + 1; ++i) {
+            rhs_[i] = s * this->rhs[i];
+        }
+        return rhs_;
+    }
+
+    SystemRhS<N>& operator*=(const double& s) {
+        *this = *this * s;
+        return *this;
     }
 
     auto begin() const {
