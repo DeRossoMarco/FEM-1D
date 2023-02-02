@@ -57,10 +57,10 @@ int main() {
         rhs.assemble(mesh, f, i * dt);
         rhs *= dt;
         rhs = rhs + matrix * sol;
-        std::cout << rhs << std::endl;
+        
         bound_d.apply_g1(mass_matrix, rhs, i * dt);
         bound_n.apply_q2(rhs, i * dt);
-        std::cout << rhs << std::endl << std::endl;
+        
         sol = Solver<N>::solve_thomas(mass_matrix, rhs);
         output << sol;
     }
