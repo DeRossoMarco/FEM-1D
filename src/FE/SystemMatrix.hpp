@@ -28,16 +28,15 @@ class SystemMatrix{
     }
 
     const std::size_t size() const {
-        return N + 2;
+        return N + 1;
     }
 
     void assemble(const Mesh &mesh,
                   const CFunction &c,
                   const DiffusionCoefficient &mi) {
         std::cout << std::endl << "Assembling system matrix" << std::endl;
-        #pragma omp parallel for num_threads(N)
-        for (std::size_t k = 1; k < N; ++k) {
-            std::cout << omp_get_thread_num() << std::endl;
+        #pragma omp parallel for num_threads(1)
+        for (std::size_t k = 0; k < N; ++k) {
             for (std::size_t i = k; i < k + 2; ++i) {
                 for (std::size_t j = k; j < k + 2; ++j) {
                     matrix(i, j) +=
@@ -70,7 +69,7 @@ class SystemMatrix{
         matrix = d;
     }
 
-    const TridiagMatrix<N + 2>& data() const {
+    const TridiagMatrix<N + 1>& data() const {
         return matrix;
     }
 
@@ -80,7 +79,7 @@ class SystemMatrix{
     }
 
     private:
-    TridiagMatrix<N + 2> matrix;
+    TridiagMatrix<N + 1> matrix;
 };
 
 #endif

@@ -16,11 +16,16 @@ class Dirichlet {
         g_2(g_2_)
     {}
 
-    void apply(SystemMatrix<N>& matrix, SystemRhS<N>& rhs, const double& t) {
+    void apply_g1(SystemMatrix<N>& matrix, SystemRhS<N>& rhs, const double& t) {
         matrix(0, 0) = 1;
-        matrix(N + 1, N + 1) = 1;
+        matrix(0, 1) = 0;
         rhs[0] = g_1(t);
-        rhs[N + 1] = g_2(t);
+    }
+
+    void apply_g2(SystemMatrix<N>& matrix, SystemRhS<N>& rhs, const double& t) {
+        matrix(N , N - 1) = 0;
+        matrix(N, N) = 1;
+        rhs[N] = g_2(t);
     }
 
     private:

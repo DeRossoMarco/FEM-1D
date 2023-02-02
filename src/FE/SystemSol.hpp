@@ -29,15 +29,14 @@ class SystemSol {
     }
 
     friend std::ostream& operator<<(std::ostream& os, const SystemSol& sol) {
-        for (auto i = 0; i < N + 2; ++i) {
-            os << "u_" << std::setw(2) << std::setfill('0') << i << " = ";
-            os << std::setfill(' ') << std::setw(10) << std::setprecision(3) << sol[i] << std::endl;
+        for (auto i = 0; i < N + 1; ++i) {
+            os << std::setw(8) << std::setprecision(3) << sol[i] << std::endl;
         }
         return os;
     }
 
     private:
-    std::array<double, N + 2> sol;
+    std::array<double, N + 1> sol;
 };
 
 #endif

@@ -5,7 +5,6 @@
 #include "../functions/ForcingTerm.hpp"
 #include "../quadrature/Quadrature.hpp"
 #include "../FEspace/BaseFunc.hpp"
-#include "../boundary/Neumann.hpp"
 
 #include <array>
 #include <cstdlib>
@@ -13,7 +12,7 @@
 #include <iomanip>
 
 template<std::size_t N>
-class SystemRhS{
+class SystemRhS {
     public:
 
     SystemRhS() {
@@ -30,49 +29,20 @@ class SystemRhS{
 
     void assemble(const Mesh &mesh, const ForcingTerm &f, const double &t) {
         std::cout << std::endl << "Assemblig system RhS" << std::endl;
-        for (std::size_t k = 1; k < N + 1; ++k) {
+        for (std::size_t k = 0; k < N; ++k) {
             for (std::size_t i = k; i < k + 2; ++i) {
-                rhs[k] +=
+                rhs[i] +=
                     Quadrature::two_point_quadrature(
                         [&] (double x) -> double {
                             return
                                 f(x, t) *
                                 BaseFunc::func(mesh, k)(x);
                         },
-                        mesh[i - 1],
-                        mesh[i]
+                        mesh[k],
+                        mesh[k + 1]
                     );
             }
         }
-    }
-
-    void assemble(const Mesh &mesh,
-                  const ForcingTerm &f,
-                  const double &t,
-                  const Neumann& bound) {
-        rhs[0] +=
-            Quadrature::two_point_quadrature(
-                [&] (double x) -> double {
-                    return
-                        f(x, t) *
-                        BaseFunc::func(mesh, 0)(x);
-                },
-                mesh[0],
-                mesh[1]
-            ) +
-            bound(0, t);
-        assemble(mesh, f, t);
-        rhs[N + 1] +=
-            Quadrature::two_point_quadrature(
-                [&] (double x) -> double {
-                    return
-                        f(x, t) *
-                        BaseFunc::func(mesh, N + 1)(x);
-                },
-                mesh[N],
-                mesh[N + 1]
-            ) +
-            bound(N + 1, t);
     }
 
     void operator=(const double& i) {
@@ -97,7 +67,7 @@ class SystemRhS{
     }
 
     private:
-    std::array<double, N + 2> rhs;
+    std::array<double, N + 1> rhs;
 };
 
 #endif

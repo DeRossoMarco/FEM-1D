@@ -17,20 +17,16 @@ class Solver {
         SystemSol<N> sol;
         double w;
 
-        sol[0] = rhs[0];
-
-        for (int i = 2; i < N; ++i) {
+        for (int i = 1; i < N; ++i) {
             w = matrix(i, i - 1) / matrix(i - 1, i - 1);
             matrix(i, i) -= w * matrix(i - 1, i);
             rhs[i] = rhs[i] - w * rhs[i - 1];
         }
 
         sol[N] = rhs[N] / matrix(N, N);
-        for (int i = N - 1; i > 0; --i) {
+        for (int i = N - 1; i >= 0; --i) {
             sol[i] = (rhs[i] - matrix(i, i + 1) * sol[i + 1]) / matrix(i, i);
         }
-
-        sol[N + 1] = rhs[N + 1];
 
         return sol;
     }

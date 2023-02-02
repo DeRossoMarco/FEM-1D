@@ -1,28 +1,31 @@
 #ifndef NEUMANN_HPP
 #define NEUMANN_HPP
 
-#include <functional>
-#include <cstdlib>
+#include "../FE/SystemMatrix.hpp"
+#include "../FE/SystemRhS.hpp"
 
+#include <functional>
+
+template<std::size_t N>
 class Neumann {
     public:
 
-    Neumann(const double& L_,
-            const std::function<double(double)>& q_1_,
+    Neumann(const std::function<double(double)>& q_1_,
             const std::function<double(double)>& q_2_) :
-        L(L_),
         q_1(q_1_),
         q_2(q_2_)
     {}
 
-    double operator()(const double& x, const double& t) const {
-        if (x == 0.0) return q_1(t);
-        else if (x == L) return q_2(t);
-        else return 0.0;
+    void apply_q1(SystemRhS<N>& rhs, const double& t) {
+        rhs[0] += q_1(t);
+    }
+
+    void apply_q2(SystemRhS<N>& rhs, const double& t) {
+        rhs[N] += q_2(t);
     }
 
     private:
-    const double L;
+    
     const std::function<double(double)> q_1;
     const std::function<double(double)> q_2;
 };
