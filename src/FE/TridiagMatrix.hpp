@@ -61,6 +61,7 @@ class TridiagMatrix {
     TridiagMatrix<N>& operator=(const TridiagMatrix<N>& matrix) {
         b[0] = matrix(0, 0);
         c[0] = matrix(0, 1);
+        #pragma omp parallel for num_threads(N - 2)
         for (int i = 1; i < N - 1; i++) {
             a[i - 1] = matrix(i, i - 1);
             b[i] = matrix(i, i);
@@ -75,6 +76,7 @@ class TridiagMatrix {
         TridiagMatrix<N> matrix_;
         matrix_(0, 0) = matrix(0, 0) + b[0];
         matrix_(0, 1) = matrix(0, 1) + c[0];
+        #pragma omp parallel for num_threads(N - 2)
         for (int i = 1; i < N - 1; i++) {
             matrix_(i, i - 1) = matrix(i, i - 1) + a[i - 1];
             matrix_(i, i) = matrix(i, i) + b[i];

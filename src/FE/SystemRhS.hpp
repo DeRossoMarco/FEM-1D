@@ -28,6 +28,7 @@ class SystemRhS {
     }
 
     void assemble(const Mesh &mesh, const ForcingTerm &f, const double &t) {
+        #pragma omp parallel for num_threads(N + 1)
         for (std::size_t k = 0; k < N; ++k) {
             for (std::size_t i = k; i < k + 2; ++i) {
                 rhs[i] +=
