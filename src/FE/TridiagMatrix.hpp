@@ -49,9 +49,41 @@ class TridiagMatrix {
     }
 
     void operator=(const double& d) {
-        for (auto& x : a) {x = d;}
-        for (auto& y : b) {y = d;}
-        for (auto& z : c) {z = d;}
+        for (auto& e : a) { e = d; }
+        for (auto& e : b) { e = d; }
+        for (auto& e : c) { e = d; }
+    }
+
+    TridiagMatrix<N>& operator=(const TridiagMatrix<N>& matrix) {
+        b[0] = matrix(0, 0);
+        c[0] = matrix(0, 1);
+        for (int i = 1; i < N - 1; i++) {
+            a[i - 1] = matrix(i, i - 1);
+            b[i] = matrix(i, i);
+            c[i] = matrix(i, i + 1);
+        }
+        a[N - 2] = matrix(N - 1, N - 2);
+        b[N - 1] = matrix(N - 1, N - 2);
+        return *this;
+    }
+
+    TridiagMatrix<N> operator+(const TridiagMatrix<N>& matrix) const {
+        TridiagMatrix<N> matrix_;
+        matrix_(0, 0) = matrix(0, 0) + b[0];
+        matrix_(0, 1) = matrix(0, 1) + c[0];
+        for (int i = 1; i < N - 1; i++) {
+            matrix_(i, i - 1) = matrix(i, i - 1) + a[i - 1];
+            matrix_(i, i) = matrix(i, i) + b[i];
+            matrix_(i, i + 1) = matrix(i, i + 1) + c[i];
+        }
+        matrix_(N - 1, N - 2) = matrix(N - 1, N - 2) + a[N - 2];
+        matrix_(N - 1, N - 1) = matrix(N - 1, N - 2) + b[N - 1];
+        return matrix_;
+    }
+
+    TridiagMatrix<N>& operator+=(const TridiagMatrix<N>& matrix) {
+        *this = *this + matrix;
+        return *this;
     }
 
     friend std::ostream& operator<<(std::ostream& os, const TridiagMatrix<N>& m) {
