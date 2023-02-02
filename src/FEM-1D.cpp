@@ -13,10 +13,10 @@
 #include <fstream>
 
 int main() {
-    constexpr double L = 10.0;
+    constexpr double L = 100.0;
     constexpr double T = 1.0;
-    constexpr int N = 20;
-    constexpr int Nt = 10;
+    constexpr int N = 30;
+    constexpr int Nt = 100;
     constexpr double dt = T / Nt;
 
     // Output file
@@ -31,7 +31,7 @@ int main() {
     CFunction c([] (double x) -> double { return 0.0; }, L);
     DiffusionCoefficient mi([] (double x) -> double { return 1.0; }, L);
     Dirichlet<N> bound_d([](double t){ return 1.0; }, [](double t){ return 1.0; });
-    Neumann<N> bound_n([](double t){ return 1.0; }, [](double t){ return 1.0; });
+    Neumann<N> bound_n([](double t){ return -1.0; }, [](double t){ return 1.0; });
 
     // FE
     Mesh mesh(L, N);
@@ -39,6 +39,8 @@ int main() {
     SystemMatrix<N> mass_matrix;
     SystemRhS<N> rhs;
     SystemSol<N> sol;
+
+    output << mesh.get_h() << ", " << dt << std::endl;
 
     // Solve solution at time 0
     matrix.assemble(mesh, c, mi);
