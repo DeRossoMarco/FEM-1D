@@ -29,10 +29,10 @@ class SystemSol {
     }
 
     friend std::ostream& operator<<(std::ostream& os, const SystemSol& sol) {
-        for (auto i = 0; i < N; ++i) {
-            os << std::setw(30) << std::scientific << std::setprecision(20) << sol[i] << " , ";
+        for (std::size_t i = 0; i < N; ++i) {
+            os << std::scientific << std::setprecision(20) << sol[i] << ",";
         }
-        os << std::setw(30) << std::scientific << std::setprecision(20) << sol[N] << std::endl;
+        os << std::scientific << std::setprecision(20) << sol[N] << std::endl;
         return os;
     }
 

@@ -6,7 +6,7 @@
 class Mesh {
     public:
 
-    Mesh(const double &L_, const unsigned int &N_) :
+    Mesh(const double &L_, const std::size_t &N_) :
         L(L_),
         N(N_),
         h(L / (N))
@@ -14,13 +14,13 @@ class Mesh {
 
     double operator[](const std::size_t &i) const;
 
-    unsigned int get_size() const;
+    std::size_t get_size() const;
 
     double get_h() const;
 
     private:
     const double L;
-    const unsigned int N;
+    std::size_t N;
     const double h;
 };
 

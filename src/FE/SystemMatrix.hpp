@@ -65,7 +65,7 @@ class SystemMatrix{
         matrix_(0, 0) = this->matrix(0, 0) + matrix(0, 0);
         matrix_(0, 1) = this->matrix(0, 1) + matrix(0, 1);
         #pragma omp parallel for
-        for (int i = 1; i < N; i++) {
+        for (std::size_t i = 1; i < N; i++) {
             matrix_(i, i - 1) = this->matrix(i, i - 1) + matrix(i, i - 1);
             matrix_(i, i) = this->matrix(i, i) + matrix(i, i);
             matrix_(i, i + 1) = this->matrix(i, i + 1) + matrix(i, i + 1);
@@ -85,7 +85,7 @@ class SystemMatrix{
         matrix_(0, 0) = this->matrix(0, 0) - matrix(0, 0);
         matrix_(0, 1) = this->matrix(0, 1) - matrix(0, 1);
         #pragma omp parallel for
-        for (int i = 1; i < N; i++) {
+        for (std::size_t i = 1; i < N; i++) {
             matrix_(i, i - 1) = this->matrix(i, i - 1) - matrix(i, i - 1);
             matrix_(i, i) = this->matrix(i, i) - matrix(i, i);
             matrix_(i, i + 1) = this->matrix(i, i + 1) - matrix(i, i + 1);
@@ -105,7 +105,7 @@ class SystemMatrix{
         matrix_(0, 0) = s * this->matrix(0, 0);
         matrix_(0, 1) = s * this->matrix(0, 1);
         #pragma omp parallel for
-        for (int i = 1; i < N; i++) {
+        for (std::size_t i = 1; i < N; i++) {
             matrix_(i, i - 1) = s * this->matrix(i, i - 1);
             matrix_(i, i) = s * this->matrix(i, i);
             matrix_(i, i + 1) = s * this->matrix(i, i + 1);
@@ -124,7 +124,7 @@ class SystemMatrix{
         SystemRhS<N> rhs;
         rhs[0] = this->matrix(0, 0) * vec[0] + this->matrix(0, 1) * vec[1];
         #pragma omp parallel for
-        for (int i = 1; i < N; i++) {
+        for (std::size_t i = 1; i < N; i++) {
             rhs[i] =    this->matrix(i, i - 1) * vec [i - 1] +
                         this->matrix(i, i) * vec[i] +
                         this->matrix(i, i + 1) * vec[i + 1];

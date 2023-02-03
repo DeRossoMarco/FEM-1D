@@ -8,7 +8,7 @@ double Mesh::operator[](const std::size_t &i) const {
     else return 0.0;
 }
 
-unsigned int Mesh::get_size() const {
+std::size_t Mesh::get_size() const {
     return N;
 }
 

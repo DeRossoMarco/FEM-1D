@@ -48,7 +48,7 @@ class TridiagMatrix {
             else if (j == i + 1) return c[i];
             else return 0.0;
         } else {
-            throw std::__throw_out_of_range;
+            return 0.0;
         }
     }
 
@@ -62,7 +62,7 @@ class TridiagMatrix {
         b[0] = matrix(0, 0);
         c[0] = matrix(0, 1);
         #pragma omp parallel for
-        for (int i = 1; i < N - 1; i++) {
+        for (std::size_t i = 1; i < N - 1; i++) {
             a[i - 1] = matrix(i, i - 1);
             b[i] = matrix(i, i);
             c[i] = matrix(i, i + 1);
@@ -77,7 +77,7 @@ class TridiagMatrix {
         matrix_(0, 0) = matrix(0, 0) + b[0];
         matrix_(0, 1) = matrix(0, 1) + c[0];
         #pragma omp parallel for
-        for (int i = 1; i < N - 1; i++) {
+        for (std::size_t i = 1; i < N - 1; i++) {
             matrix_(i, i - 1) = matrix(i, i - 1) + a[i - 1];
             matrix_(i, i) = matrix(i, i) + b[i];
             matrix_(i, i + 1) = matrix(i, i + 1) + c[i];
@@ -93,8 +93,8 @@ class TridiagMatrix {
     }
 
     friend std::ostream& operator<<(std::ostream& os, const TridiagMatrix<N>& m) {
-        for (auto i = 0; i < N; ++i) {
-            for (auto j = 0; j < N; ++j) {
+        for (std::size_t i = 0; i < N; ++i) {
+            for (std::size_t j = 0; j < N; ++j) {
                 os << std::setw(8) << std::setprecision(3) << m(i, j);
             }
             os << std::endl;

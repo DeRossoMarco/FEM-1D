@@ -53,7 +53,7 @@ class SystemRhS {
 
     SystemRhS<N> operator+(const SystemRhS<N>& rhs) const {
         SystemRhS<N> rhs_;
-        for (int i = 0; i < N + 1; ++i) {
+        for (std::size_t i = 0; i < N + 1; ++i) {
             rhs_[i] = this->rhs[i] + rhs[i];
         }
         return rhs_;
@@ -66,7 +66,7 @@ class SystemRhS {
 
     SystemRhS<N> operator-(const SystemRhS<N>& rhs) const {
         SystemRhS<N> rhs_;
-        for (int i = 0; i < N + 1; ++i) {
+        for (std::size_t i = 0; i < N + 1; ++i) {
             rhs_[i] = this->rhs[i] - rhs[i];
         }
     }
@@ -78,7 +78,7 @@ class SystemRhS {
 
     SystemRhS<N> operator*(const double& s) const {
         SystemRhS<N> rhs_;
-        for (int i = 0; i < N + 1; ++i) {
+        for (std::size_t i = 0; i < N + 1; ++i) {
             rhs_[i] = s * this->rhs[i];
         }
         return rhs_;
