@@ -70,8 +70,8 @@ class SystemMatrix{
             matrix_(i, i) = this->matrix(i, i) + matrix(i, i);
             matrix_(i, i + 1) = this->matrix(i, i + 1) + matrix(i, i + 1);
         }
-        matrix_(N - 1, N - 2) = this->matrix(N - 1, N - 2) + matrix(N - 1, N - 2);
-        matrix_(N - 1, N - 1) = this->matrix(N - 1, N - 1) + matrix(N - 1, N - 1);
+        matrix_(N, N - 1) = this->matrix(N, N - 1) + matrix(N, N - 1);
+        matrix_(N, N) = this->matrix(N, N) + matrix(N, N);
         return matrix_;
     }
 
@@ -90,8 +90,8 @@ class SystemMatrix{
             matrix_(i, i) = this->matrix(i, i) - matrix(i, i);
             matrix_(i, i + 1) = this->matrix(i, i + 1) - matrix(i, i + 1);
         }
-        matrix_(N - 1, N - 2) = this->matrix(N - 1, N - 2) - matrix(N - 1, N - 2);
-        matrix_(N - 1, N - 1) = this->matrix(N - 1, N - 1) - matrix(N - 1, N - 1);
+        matrix_(N, N - 1) = this->matrix(N, N - 1) - matrix(N, N - 1);
+        matrix_(N, N) = this->matrix(N, N) - matrix(N, N);
         return matrix_;
     }
 
@@ -110,8 +110,8 @@ class SystemMatrix{
             matrix_(i, i) = s * this->matrix(i, i);
             matrix_(i, i + 1) = s * this->matrix(i, i + 1);
         }
-        matrix_(N - 1, N - 2) = s * this->matrix(N - 1, N - 2);
-        matrix_(N - 1, N - 1) = s * this->matrix(N - 1, N - 1);
+        matrix_(N, N - 1) = s * this->matrix(N, N - 1);
+        matrix_(N, N) = s * this->matrix(N, N);
         return matrix_;
     }
 

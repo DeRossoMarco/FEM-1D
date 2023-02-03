@@ -16,7 +16,7 @@ class Solver {
         SystemSol<N> sol;
         double w;
 
-        for (std::size_t i = 1; i < N; ++i) {
+        for (std::size_t i = 1; i < N + 1; ++i) {
             w = matrix(i, i - 1) / matrix(i - 1, i - 1);
             matrix(i, i) -= w * matrix(i - 1, i);
             rhs[i] = rhs[i] - w * rhs[i - 1];
