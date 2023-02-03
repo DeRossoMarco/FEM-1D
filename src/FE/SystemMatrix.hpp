@@ -36,7 +36,7 @@ class SystemMatrix{
     void assemble(const Mesh &mesh,
                   const CFunction &c,
                   const DiffusionCoefficient &mi) {
-        #pragma omp parallel for num_threads(N)
+        #pragma omp parallel for
         for (std::size_t k = 0; k < N; ++k) {
             #pragma omp atomic
             matrix(k, k) += compute_local_contribute(mesh, c, mi, k, k, k);
@@ -64,7 +64,7 @@ class SystemMatrix{
         SystemMatrix<N> matrix_;
         matrix_(0, 0) = this->matrix(0, 0) + matrix(0, 0);
         matrix_(0, 1) = this->matrix(0, 1) + matrix(0, 1);
-        #pragma omp parallel for num_threads(N - 2)
+        #pragma omp parallel for
         for (int i = 1; i < N; i++) {
             matrix_(i, i - 1) = this->matrix(i, i - 1) + matrix(i, i - 1);
             matrix_(i, i) = this->matrix(i, i) + matrix(i, i);
@@ -84,7 +84,7 @@ class SystemMatrix{
         SystemMatrix<N> matrix_;
         matrix_(0, 0) = this->matrix(0, 0) - matrix(0, 0);
         matrix_(0, 1) = this->matrix(0, 1) - matrix(0, 1);
-        #pragma omp parallel for num_threads(N - 2)
+        #pragma omp parallel for
         for (int i = 1; i < N; i++) {
             matrix_(i, i - 1) = this->matrix(i, i - 1) - matrix(i, i - 1);
             matrix_(i, i) = this->matrix(i, i) - matrix(i, i);
@@ -104,7 +104,7 @@ class SystemMatrix{
         SystemMatrix<N> matrix_;
         matrix_(0, 0) = s * this->matrix(0, 0);
         matrix_(0, 1) = s * this->matrix(0, 1);
-        #pragma omp parallel for num_threads(N - 2)
+        #pragma omp parallel for
         for (int i = 1; i < N; i++) {
             matrix_(i, i - 1) = s * this->matrix(i, i - 1);
             matrix_(i, i) = s * this->matrix(i, i);
@@ -123,7 +123,7 @@ class SystemMatrix{
     SystemRhS<N> operator*(const SystemSol<N>& vec) const {
         SystemRhS<N> rhs;
         rhs[0] = this->matrix(0, 0) * vec[0] + this->matrix(0, 1) * vec[1];
-        #pragma omp parallel for num_threads(N - 2)
+        #pragma omp parallel for
         for (int i = 1; i < N; i++) {
             rhs[i] =    this->matrix(i, i - 1) * vec [i - 1] +
                         this->matrix(i, i) * vec[i] +
