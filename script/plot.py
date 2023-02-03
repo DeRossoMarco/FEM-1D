@@ -1,9 +1,8 @@
-from mpl_toolkits import mplot3d
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
-fig = plt.figure(figsize = (10,10))
+fig = plt.figure(figsize = (10, 10))
 ax = plt.axes(projection='3d')
 
 # Load parameters
@@ -33,5 +32,5 @@ ax.set_zlabel('Intensity', labelpad=20)
 plt.savefig("../build/solution.pdf")
 
 # DIsplay 3D solution
-plt.suptitle("Solution")
+plt.suptitle("SOLUTION")
 plt.show()
