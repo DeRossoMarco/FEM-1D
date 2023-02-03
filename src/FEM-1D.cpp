@@ -8,6 +8,7 @@
 #include "FE/SystemSol.hpp"
 #include "boundary/Dirichlet.hpp"
 #include "boundary/Neumann.hpp"
+#include "timing/Timing.hpp"
  
 #include <iostream>
 #include <fstream>
@@ -15,11 +16,15 @@
 
 int main() {
     constexpr double L = 100.0;
-    constexpr double T = 1.0;
+    constexpr double T = 0.0;
     constexpr std::size_t N = 100;
     constexpr std::size_t Nt = 1000;
     constexpr double dt = T / Nt;
     constexpr double theta = 1.0;
+    constexpr std::size_t num_threads = 10;
+
+    Timing timer(num_threads);
+    omp_set_num_threads(num_threads);
 
     // Output file
     std::ofstream output("output.csv", std::ofstream::out);
@@ -44,6 +49,8 @@ int main() {
     SystemSol<N> sol;
 
     output << mesh.get_h() << ", " << dt << std::endl;
+
+    timer.start();
 
     // Solve solution at time 0
     matrix.assemble(mesh, c, mi);
@@ -75,6 +82,9 @@ int main() {
         sol = Solver<N>::solve_thomas(mass_matrix, rhs);
         output << sol;
     }
+
+    timer.stop();
+    timer.print_report();
 
     output.close();
     return 0;
