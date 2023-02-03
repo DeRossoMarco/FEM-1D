@@ -13,10 +13,10 @@
 #include <fstream>
 
 int main() {
-    constexpr double L = 100.0;
+    constexpr double L = 10000.0;
     constexpr double T = 1.0;
-    constexpr int N = 30;
-    constexpr int Nt = 100;
+    constexpr std::size_t N = 1000;
+    constexpr std::size_t Nt = 1000;
     constexpr double dt = T / Nt;
 
     // Output file
