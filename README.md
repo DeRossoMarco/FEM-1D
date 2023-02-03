@@ -45,11 +45,11 @@ Marco De Rosso
 
     At $x=0$:
 
-    $\begin{cases} u(0,t)=g_1(t) \\ -\mu\frac{\delta u}{\delta x}(0, t)=q_1(t) \end{cases}$ or
+    $\begin{cases} u(0,t)=g_1(t) \\ or \\ -\mu\frac{\delta u}{\delta x}(0, t)=q_1(t) \end{cases}$
 
     At $x=L$:
 
-    $\begin{cases} u(L,t)=g_2(t) \\ -\mu\frac{\delta u}{\delta x}(L, t)=q_2(t) \end{cases}$ or
+    $\begin{cases} u(L,t)=g_2(t) \\ or \\ -\mu\frac{\delta u}{\delta x}(L, t)=q_2(t) \end{cases}$
 
 
 - ## Class implemented
@@ -60,16 +60,20 @@ Marco De Rosso
 
     ### Boundary
 
-    These are two classes that allow you to define and apply the appropriate boundary conditions for the problem.
+    These are two classes that allow you to define and apply the appropriate boundary conditions for the problem. One of the two conditions must be Dirichlet boundary condition, otherwise the problem has infinite solutions up to a constant and the solver is not able to solve the linear system.
 
    ### Functions
 
-   In this package are implemented all the functions that define the problem and that are used in the composition of the linear system.
+   In this package are implemented all the functions that define the problem and that are used in the composition of the linear system. Functions are wrappers for `std::function`. The `operator()` was overloaded in order to return the value of the function for a specific value of space or time, depending on function type. 
 
    ### Quadrature
 
-   The quadrature class allows to calculate in an approximate way the integrals for the functions defined before and the base functions.
+   The quadrature class allows to calculate in an approximate way the integrals for the functions defined before and the base functions. The algorithm used for quadrature is the two-point Gauss-Legendre algorithm. You have to provide a `std::function<double(double)` and two extremes for quadrature to the static function of the class. The function returns the approximate value of the integral of the function in the given interval.
 
    ### FE
 
    Here all the classes useful for the Galerkin Finite Elements Method are defined, in addition a solver for tridiagonal systems with Thomas algorithm is implemented. There is also a class that allows you to use a tridiagonal matrix in a totally transparent way, allowing you to save a lot of memory space.
+
+   ### Timing
+
+   For the timing report, has been implemented a class that prints the results both on standard out and on file for speedup plot. The output file is saved in `build/` directory. The timing function of OpenMP was used to record the execution time.
