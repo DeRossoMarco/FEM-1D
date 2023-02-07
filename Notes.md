@@ -1,4 +1,5 @@
 # Some Notes #
+- Code compiles and runs without issues, readme is well done
 - A do not understand the need of `CFunction`. Yet, why not make it as a functor, i.e. defining a call operator?
 This way, it would behave as a function.
 - The same for `DiffusionCoefficient`. There is no need to extend to zero outside the interval [0,L],
@@ -49,7 +50,23 @@ here you are not guaranteed that two different threads enter the two atomic regi
 some efficiency gain. But at the price of a very rigid code. You cannot define the size of the probelm rutime,
 - by reading it from a file, for instance.
 - You have assumed uniform mesh in your mesh class. In general, mesh can be non uniform.
+- In `[&, mesh, i] (double x) -> double { ... }` you are capturing everything by reference except `mesh` and `i` by copy. You should capture everything by reference.
 
 
 # Minor Stuff #
 - You should comment more the code, in particular give a briaf descriotion of the classes/methods/function, parameters etc.
+- `Mesh::operator[]` does not have a clear meaning, `operator`s should be implemented only when it is clear what they mean
+- You are outputting too much data with `std::setprecision(20)` for doubles, they do not have more than 17 significant digits. In general you should use `std::setprecision(std::numeric_limits<decltype(value)>::max_digits10)` to serialize/deserialize a variable `value`
+- The following code is clear but does not scale well since you are creating many temporary objects. Since you are employing a uniform mesh you could at least locally save some variables to avoid recomputing them.
+```cpp
+Quadrature::two_point_quadrature(
+                    [&] (double x) -> double {
+                        return
+                            mi.value(x) * 
+                            BaseFunc::d_func(mesh, i)(x) *
+                            BaseFunc::d_func(mesh, j)(x);
+                    },
+                    mesh[k],
+                    mesh[k + 1]
+                )
+```
