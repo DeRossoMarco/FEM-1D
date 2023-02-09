@@ -5,6 +5,7 @@
 #include <array>
 #include <iostream>
 #include <iomanip>
+#include <cfloat>
 
 template<std::size_t N>
 class SystemSol {
@@ -32,7 +33,8 @@ class SystemSol {
         for (std::size_t i = 0; i < N; ++i) {
             os << std::scientific << std::setprecision(20) << sol[i] << ",";
         }
-        os << std::scientific << std::setprecision(20) << sol[N] << std::endl;
+        os << std::scientific << std::setprecision(std::numeric_limits<decltype(sol[N])>::max_digits10)
+           << sol[N] << std::endl;
         return os;
     }
 
