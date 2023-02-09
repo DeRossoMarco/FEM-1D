@@ -26,7 +26,7 @@ class Timing {
         std::cout << "  Total elapsed time:                 " << std::to_string(end_t - start_t) << " s" << std::endl;
 
         std::ofstream output;
-        output.open("timing_report.txt", std::ios_base::app);
+        output.open("timing.csv", std::ios_base::app);
         if (!output.is_open()) {
             std::cout << "Error! Cannot open timing report file." << std::endl;
             return;

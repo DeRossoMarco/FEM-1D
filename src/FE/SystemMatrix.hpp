@@ -38,14 +38,14 @@ class SystemMatrix{
                   const DiffusionCoefficient &mi) {
         #pragma omp parallel for
         for (std::size_t k = 0; k < N; ++k) {
-            #pragma omp critical one
+            #pragma omp critical (one)
             matrix(k, k) += compute_local_contribute(mesh, c, mi, k, k, k);
 
             matrix(k, k + 1) += compute_local_contribute(mesh, c, mi, k, k + 1, k);
 
             matrix(k + 1, k) += compute_local_contribute(mesh, c, mi, k + 1, k, k);
 
-            #pragma omp critical one
+            #pragma omp critical (one)
             matrix(k + 1, k + 1) += compute_local_contribute(mesh, c, mi, k + 1, k + 1, k);
         }
     }
